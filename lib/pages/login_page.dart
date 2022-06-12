@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_mobx/stores/login_store.dart';
-
+import 'package:flutter_mobx/flutter_mobx.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custon_icon_button.dart';
 import 'list_page.dart';
@@ -11,7 +11,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   //instancia a classe LoginStore para usar Mobx
   LoginStore loginStore = LoginStore();
 
@@ -28,9 +27,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             elevation: 16,
             child: Padding(
-                padding: const EdgeInsets.all(16),
-                child:
-                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
                   CustomTextField(
                     hint: 'E-mail',
                     prefix: Icon(Icons.account_circle),
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                     hint: 'Senha',
                     prefix: Icon(Icons.lock),
                     obscure: true,
-                    onChanged:loginStore.setPassword,
+                    onChanged: loginStore.setPassword,
                     enabled: true,
                     suffix: CustomIconButton(
                       radius: 32,
@@ -56,31 +56,43 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 16,
                   ),
-                  SizedBox(
-                      height: 44,
-                      width: 100,
-                      child: ElevatedButton(
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
+                  //Observer widget que escuta observáveis e reconstrói automaticamente as alterações
+                  Observer(
+                    builder: (_) {
+                      return SizedBox(
+                        height: 44,
+                        width: 100,
+                        child: ElevatedButton(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            primary: Theme.of(context).primaryColor,
+                            onSurface:
+                                Theme.of(context).primaryColor.withAlpha(100),
                           ),
-                          primary: Theme.of(context).primaryColor,
-                          onSurface:
-                              Theme.of(context).primaryColor.withAlpha(100),
+                          //se login e senha forem validos, ativa o botao de login (vincula a funcao ao onPressed)
+                          onPressed: loginStore.ifFormValid
+                              ? () {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => ListPage()),
+                                  );
+                                }
+                              : null,
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => ListPage()));
-                        },
-                      )),
-                ])),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
