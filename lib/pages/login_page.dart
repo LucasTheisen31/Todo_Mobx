@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_mobx/stores/login_store.dart';
 
 import '../widgets/custom_text_field.dart';
 import '../widgets/custon_icon_button.dart';
@@ -10,6 +11,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  //instancia a classe LoginStore para usar Mobx
+  LoginStore loginStore = LoginStore();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                     hint: 'E-mail',
                     prefix: Icon(Icons.account_circle),
                     textInputType: TextInputType.emailAddress,
-                    onChanged: (email) {},
+                    onChanged: loginStore.setEmail,
                     enabled: true,
                   ),
                   const SizedBox(
@@ -40,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                     hint: 'Senha',
                     prefix: Icon(Icons.lock),
                     obscure: true,
-                    onChanged: (pass) {},
+                    onChanged:loginStore.setPassword,
                     enabled: true,
                     suffix: CustomIconButton(
                       radius: 32,

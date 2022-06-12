@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
 
   CustomTextField({this.hint, this.prefix,  this.suffix, this.obscure = false,
-    this.textInputType, this.onChanged, this.enabled,  this.controller
+    this.textInputType, required this.onChanged, this.enabled,  this.controller
   });
 
   final TextEditingController? controller;
@@ -12,7 +12,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffix;
   final bool obscure;
   final TextInputType? textInputType;
-  final Function(String)? onChanged;
+  final Function(String) onChanged;
   final bool? enabled;
 
   @override
