@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import 'package:todo_mobx/stores/login_store.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../widgets/custom_text_field.dart';
@@ -13,7 +15,30 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //instancia a classe LoginStore para usar Mobx
   LoginStore loginStore = LoginStore();
+
   bool obscurePassword = true;
+  //ReactionDisposer para fechar as reações
+  late ReactionDisposer disposer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    /*autorun é uma reação que é executada sempre que um observable que esteja dentro dele(temos o logedIn que é um oservable e esta demtro do autorun) seja lido ou modificado
+        sempre que tiver uma alteração no logedIn, o autorun vai executar a função*/
+    autorun((_){
+      if (kDebugMode) {
+        print(loginStore.logedIn);
+      }
+    });
+    //atribui o disposer a reaction, pois precisamos poder fechar a reaction atraves do disposer
+    //reaction vai observar o loginStore.logedIn e quando logedIn for alterado vai chamar a funcao passando o valor de logedIn (true ou false) e essa funcao verifica se deve alterar a pagina ou nao
+    disposer = reaction((_) => loginStore.logedIn, (logedIn) {
+      if(logedIn == true){
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ListPage(),));
+      }
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,5 +133,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    //disposer() para fechar a reação
+    disposer();
+    super.dispose();
   }
 }

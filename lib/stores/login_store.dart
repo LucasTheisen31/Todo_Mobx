@@ -32,8 +32,13 @@ abstract class _LoginStore with Store {
   @observable
   bool passwordVisible = false;
 
+  //variavel obssrvavel para indicar se esta carregando o loggin
   @observable
   bool loading = false;
+
+  //variavel obssrvavel para indicar se usuario esta logado ou não
+  @observable
+  bool logedIn = false;
 
   @action
   void setEmail(String value) {
@@ -51,13 +56,14 @@ abstract class _LoginStore with Store {
   }
 
   @action
-   Future<void> login() async {
+    Future<void> login() async {
     loading = true;
 
     //processamento do login
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 3));
 
     loading = false;
+    logedIn = true;
 
   }
 

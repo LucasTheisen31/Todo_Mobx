@@ -94,6 +94,22 @@ mixin _$LoginStore on _LoginStore, Store {
     });
   }
 
+  late final _$logedInAtom =
+      Atom(name: '_LoginStore.logedIn', context: context);
+
+  @override
+  bool get logedIn {
+    _$logedInAtom.reportRead();
+    return super.logedIn;
+  }
+
+  @override
+  set logedIn(bool value) {
+    _$logedInAtom.reportWrite(value, super.logedIn, () {
+      super.logedIn = value;
+    });
+  }
+
   late final _$loginAsyncAction =
       AsyncAction('_LoginStore.login', context: context);
 
@@ -143,6 +159,7 @@ mixin _$LoginStore on _LoginStore, Store {
     return '''
 passwordVisible: ${passwordVisible},
 loading: ${loading},
+logedIn: ${logedIn},
 isEmailValid: ${isEmailValid},
 isPasswordValid: ${isPasswordValid},
 loginPressed: ${loginPressed}
