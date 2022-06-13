@@ -23,12 +23,12 @@ mixin _$LoginStore on _LoginStore, Store {
       (_$isPasswordValidComputed ??= Computed<bool>(() => super.isPasswordValid,
               name: '_LoginStore.isPasswordValid'))
           .value;
-  Computed<dynamic>? _$ifFormValidComputed;
+  Computed<Function?>? _$loginPressedComputed;
 
   @override
-  dynamic get ifFormValid =>
-      (_$ifFormValidComputed ??= Computed<dynamic>(() => super.ifFormValid,
-              name: '_LoginStore.ifFormValid'))
+  Function? get loginPressed =>
+      (_$loginPressedComputed ??= Computed<Function?>(() => super.loginPressed,
+              name: '_LoginStore.loginPressed'))
           .value;
 
   late final _$_emailAtom = Atom(name: '_LoginStore._email', context: context);
@@ -62,11 +62,51 @@ mixin _$LoginStore on _LoginStore, Store {
     });
   }
 
+  late final _$passwordVisibleAtom =
+      Atom(name: '_LoginStore.passwordVisible', context: context);
+
+  @override
+  bool get passwordVisible {
+    _$passwordVisibleAtom.reportRead();
+    return super.passwordVisible;
+  }
+
+  @override
+  set passwordVisible(bool value) {
+    _$passwordVisibleAtom.reportWrite(value, super.passwordVisible, () {
+      super.passwordVisible = value;
+    });
+  }
+
+  late final _$loadingAtom =
+      Atom(name: '_LoginStore.loading', context: context);
+
+  @override
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
+  }
+
+  @override
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
+    });
+  }
+
+  late final _$loginAsyncAction =
+      AsyncAction('_LoginStore.login', context: context);
+
+  @override
+  Future<void> login() {
+    return _$loginAsyncAction.run(() => super.login());
+  }
+
   late final _$_LoginStoreActionController =
       ActionController(name: '_LoginStore', context: context);
 
   @override
-  dynamic setEmail(String value) {
+  void setEmail(String value) {
     final _$actionInfo =
         _$_LoginStoreActionController.startAction(name: '_LoginStore.setEmail');
     try {
@@ -77,7 +117,7 @@ mixin _$LoginStore on _LoginStore, Store {
   }
 
   @override
-  dynamic setPassword(String value) {
+  void setPassword(String value) {
     final _$actionInfo = _$_LoginStoreActionController.startAction(
         name: '_LoginStore.setPassword');
     try {
@@ -88,11 +128,24 @@ mixin _$LoginStore on _LoginStore, Store {
   }
 
   @override
+  void setAlterPasswordVisible() {
+    final _$actionInfo = _$_LoginStoreActionController.startAction(
+        name: '_LoginStore.setAlterPasswordVisible');
+    try {
+      return super.setAlterPasswordVisible();
+    } finally {
+      _$_LoginStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+passwordVisible: ${passwordVisible},
+loading: ${loading},
 isEmailValid: ${isEmailValid},
 isPasswordValid: ${isPasswordValid},
-ifFormValid: ${ifFormValid}
+loginPressed: ${loginPressed}
     ''';
   }
 }

@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //instancia a classe LoginStore para usar Mobx
   LoginStore loginStore = LoginStore();
+  bool obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,44 +32,61 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  CustomTextField(
-                    hint: 'E-mail',
-                    prefix: Icon(Icons.account_circle),
-                    textInputType: TextInputType.emailAddress,
-                    onChanged: loginStore.setEmail,
-                    enabled: true,
+                  Observer(
+                    builder: (context) {
+                      return CustomTextField(
+                        hint: 'E-mail',
+                        prefix: Icon(Icons.account_circle),
+                        textInputType: TextInputType.emailAddress,
+                        onChanged: loginStore.setEmail,
+                        enabled: !loginStore.loading,
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
-                  CustomTextField(
-                    hint: 'Senha',
-                    prefix: Icon(Icons.lock),
-                    obscure: true,
-                    onChanged: loginStore.setPassword,
-                    enabled: true,
-                    suffix: CustomIconButton(
-                      radius: 32,
-                      iconData: Icons.visibility,
-                      onTap: () {},
-                    ),
+                  Observer(
+                    builder: (context) {
+                      return CustomTextField(
+                        hint: 'Senha',
+                        prefix: Icon(Icons.lock),
+                        obscure: !loginStore.passwordVisible,
+                        onChanged: loginStore.setPassword,
+                        enabled: !loginStore.loading,
+                        suffix: CustomIconButton(
+                          radius: 32,
+                          iconData: loginStore.passwordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          onTap: loginStore.setAlterPasswordVisible,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   //Observer widget que escuta observáveis e reconstrói automaticamente as alterações
                   Observer(
-                    builder: (_) {
+                    builder: (context) {
                       return SizedBox(
                         height: 44,
                         width: 100,
                         child: ElevatedButton(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: loginStore.loading
+                              ? Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32),
@@ -78,14 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Theme.of(context).primaryColor.withAlpha(100),
                           ),
                           //se login e senha forem validos, ativa o botao de login (vincula a funcao ao onPressed)
-                          onPressed: loginStore.ifFormValid
-                              ? () {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => ListPage()),
-                                  );
-                                }
-                              : null,
+                          onPressed: loginStore.loginPressed as void Function()?
                         ),
                       );
                     },
