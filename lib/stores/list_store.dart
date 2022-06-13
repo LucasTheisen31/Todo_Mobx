@@ -1,4 +1,5 @@
 import 'package:mobx/mobx.dart';
+import 'package:todo_mobx/stores/todo_store.dart';
 
 /*Comando queprecisa executar no terminal:
 flutter packages pub run build_runner watch
@@ -18,7 +19,7 @@ abstract class _ListStore with Store{
 
   //lista internamente observavel, perceba que para observar itens da lista temos o tipo ObservableList
   @observable
-  ObservableList<String> todoList = ObservableList<String>();
+  ObservableList<TodoStore> todoList = ObservableList<TodoStore>();
 
   @action
   void setNewTodoTitle(String value){
@@ -27,8 +28,15 @@ abstract class _ListStore with Store{
 
   @action
   void addTodoList(){
-    todoList.add(newTodoTitle);
-    print(todoList);
+    //todoList.insert(0 insere na 1 posição da lista
+    todoList.insert(0, TodoStore(newTodoTitle));
+    newTodoTitle = '';
+  }
+
+  //remove uma tarefa(lembrando que é uma action, usada para alterar os valores dos observable)
+  @action
+  void removeTodo(int index){
+      todoList.removeAt(index);
   }
 
   @computed

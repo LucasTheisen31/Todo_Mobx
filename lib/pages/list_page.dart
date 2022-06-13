@@ -6,9 +6,7 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/custon_icon_button.dart';
 import 'login_page.dart';
 
-
 class ListPage extends StatefulWidget {
-
   @override
   _ListPageState createState() => _ListPageState();
 }
@@ -16,6 +14,8 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
 
   ListStore listStore = ListStore();
+
+  final TextEditingController _controller =  TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,8 @@ class _ListPageState extends State<ListPage> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -36,16 +37,14 @@ class _ListPageState extends State<ListPage> {
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
-                          fontSize: 32
-                      ),
+                          fontSize: 32),
                     ),
                     IconButton(
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
-                      onPressed: (){
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context)=>LoginPage())
-                        );
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => LoginPage()));
                       },
                     ),
                   ],
@@ -66,37 +65,55 @@ class _ListPageState extends State<ListPage> {
                             return CustomTextField(
                               hint: 'Tarefa',
                               onChanged: listStore.setNewTodoTitle,
-                              suffix: listStore.newTodoTitleValidIsNotEmpty ? CustomIconButton(
-                                radius: 32,
-                                iconData: Icons.add,
-                                onTap: listStore.addTodoList,
-                              ) : null,
+                              controller: _controller,
+                              suffix: listStore.newTodoTitleValidIsNotEmpty
+                                  ? CustomIconButton(
+                                      radius: 32,
+                                      iconData: Icons.add,
+                                      onTap: (){
+                                        listStore.addTodoList();
+                                        _controller.clear();
+                                      }
+                                    )
+                                  : null,
                             );
                           },
                         ),
-                        const SizedBox(height: 8,),
-                        Expanded(
-                          child: Observer(
-                            builder: (context) {
-                              return ListView.separated(
-                                itemCount: listStore.todoList.length,
-                                itemBuilder: (_, index){
-                                  return ListTile(
-                                    title: Text(
-                                      listStore.todoList[index],
-                                    ),
-                                    onTap: (){
-
-                                    },
-                                  );
-                                },
-                                separatorBuilder: (_, __){
-                                  return Divider();
-                                },
-                              );
-                            },
-                          )
+                        const SizedBox(
+                          height: 8,
                         ),
+                        Expanded(child: Observer(
+                          builder: (context) {
+                            return ListView.separated(
+                              itemCount: listStore.todoList.length,
+                              itemBuilder: (_, index) {
+                                return Observer(
+                                  builder: (context) {
+                                    return ListTile(
+                                      title: Text(
+                                        listStore.todoList[index].title,
+                                        style: listStore.todoList[index].done
+                                            ? TextStyle(
+                                                color: Colors.grey,
+                                                decoration:
+                                                    TextDecoration.lineThrough)
+                                            : TextStyle(color: Colors.black),
+                                      ),
+                                      onTap:
+                                          listStore.todoList[index].toggleDone,
+                                      onLongPress: (){
+                                        listStore.removeTodo(index);
+                                      }
+                                    );
+                                  },
+                                );
+                              },
+                              separatorBuilder: (_, __) {
+                                return Divider();
+                              },
+                            );
+                          },
+                        )),
                       ],
                     ),
                   ),

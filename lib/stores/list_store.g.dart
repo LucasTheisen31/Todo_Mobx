@@ -38,13 +38,13 @@ mixin _$ListStore on _ListStore, Store {
       Atom(name: '_ListStore.todoList', context: context);
 
   @override
-  ObservableList<String> get todoList {
+  ObservableList<TodoStore> get todoList {
     _$todoListAtom.reportRead();
     return super.todoList;
   }
 
   @override
-  set todoList(ObservableList<String> value) {
+  set todoList(ObservableList<TodoStore> value) {
     _$todoListAtom.reportWrite(value, super.todoList, () {
       super.todoList = value;
     });
@@ -70,6 +70,17 @@ mixin _$ListStore on _ListStore, Store {
         name: '_ListStore.addTodoList');
     try {
       return super.addTodoList();
+    } finally {
+      _$_ListStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeTodo(int index) {
+    final _$actionInfo =
+        _$_ListStoreActionController.startAction(name: '_ListStore.removeTodo');
+    try {
+      return super.removeTodo(index);
     } finally {
       _$_ListStoreActionController.endAction(_$actionInfo);
     }
