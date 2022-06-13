@@ -10,6 +10,7 @@ part 'login_store.g.dart';
 class LoginStore = _LoginStore with _$LoginStore;
 
 abstract class _LoginStore with Store {
+
   /*@observable indica as variaveis que serao observadas, @action indica a função que ira alterar o valor das variaveis observadas,
   @computed são dados que derivam dos seus observáveis, por exemplo, você quer liberar um botão quando todos os seus dados foram preenchidos (@computed precisamos de um get)*/
 
@@ -60,7 +61,7 @@ abstract class _LoginStore with Store {
     loading = true;
 
     //processamento do login
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
 
     loading = false;
     logedIn = true;
