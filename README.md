@@ -1,6 +1,7 @@
 # todo_mobx
 
 Projeto com Mobx
+Aplicativo Agenda de Tarefas para aprendizadocom MobX
 
 ## Getting Started
 
