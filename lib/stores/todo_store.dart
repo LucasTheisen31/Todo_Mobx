@@ -26,5 +26,4 @@ abstract class _TodoStore with Store {
     done = !done;
   }
 
-
 }

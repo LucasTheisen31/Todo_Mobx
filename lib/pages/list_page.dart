@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_mobx/stores/list_store.dart';
+import 'package:todo_mobx/stores/login_store.dart';
 
 import '../widgets/custom_text_field.dart';
 import '../widgets/custon_icon_button.dart';
@@ -43,6 +45,8 @@ class _ListPageState extends State<ListPage> {
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
                       onPressed: () {
+                        //usando um Provider doo tipo LoginStore, temos acessa a classe LoginStore e entao podemos deslogar
+                        Provider.of<LoginStore>(context, listen: false).logout();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => LoginPage()));
                       },

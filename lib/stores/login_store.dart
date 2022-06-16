@@ -66,6 +66,15 @@ abstract class _LoginStore with Store {
     loading = false;
     logedIn = true;
 
+    //reseta o email e senha
+    _email = '';
+    _password = '';
+
+  }
+
+  @action
+  void logout(){
+    logedIn = false;
   }
 
   @computed
@@ -77,4 +86,5 @@ abstract class _LoginStore with Store {
   //se email e password forem validos e nao estiver carregando o login, retorna a funcao login senao retorna null
   @computed
   Function? get loginPressed => (isEmailValid && isPasswordValid && !loading) ? login as Function : null;
+
 }
